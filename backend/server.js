@@ -62,8 +62,8 @@ const storage = multer.diskStorage({
  * middleware is the upload.single("picture")
  * register is the function where we save the data (controller)
  */
-app.post("/auth/register", upload.single("picture"), register)
-
+//app.post("/auth/register", upload.single("picture"), register)
+app.post("/auth/register", register)
 
 const upload = multer({storage})
 /**MONGOOSE SETUP */

@@ -9,6 +9,11 @@ import User from "../models/userModel.js"
  * 
  * @param {*} req 
  * @param {*} res 
+ * 
+ * @description Register a new user
+ * @route POST  /auth/register
+ * @access      Public
+ * 
  */
 export const register = async(req, res) => { //this is the callback function 
     try{
@@ -46,9 +51,15 @@ export const register = async(req, res) => { //this is the callback function
         //201 is created
         /**
          * USE POSTMAN to check
+         * 
+         * Set the Postman to POST 
+         * url: http://localhost:3001/auth/register
+         * 
+         * Go to Body 
+         * - enter the key and values 
          */
         res.status(201).json(savedUser);
     }catch(err){
-
+        res.status(500).json({error: err.message})
     }
 }

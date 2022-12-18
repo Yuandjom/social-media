@@ -22,6 +22,8 @@ import path from "path"
 import { fileURLToPath } from 'url';
 import {register} from './controllers/authController.js'
 import authRoutes from "./routes/authRoutes.js"
+import userRoutes from "./routes/userRoutes.js"
+//import postRoutes from "./routes/postRoutes.js"
 import { verifyToken } from './middleware/authMiddleware.js';
 
 /**CONFIGURATION */
@@ -72,7 +74,8 @@ app.post("/auth/register", register)
 
 /**ROUTES */
 app.use("/auth", authRoutes)
-
+app.use("/users", userRoutes)
+//app.use('/posts', postRoutes)
 
 /**MONGOOSE SETUP */
 import connectDB from './config/db.js' // DB connection

@@ -11,7 +11,7 @@ import User from "../models/userModel.js"
  * @param {*} res 
  * 
  * @description Register a new user
- * @route POST  /auth/register
+ * @route       POST  /auth/register
  * @access      Public
  * 
  */
@@ -60,6 +60,39 @@ export const register = async(req, res) => { //this is the callback function
          */
         res.status(201).json(savedUser);
     }catch(err){
+        res.status(500).json({error: err.message})
+    }
+}
+
+/**LOGGING IN FUNCTION 
+ * @description Login a user
+ * @route       POST /auth/login
+ * @access      Public
+*/
+export const login = async(req, res) => {
+    try {
+        //destructure the email and password from req.body
+        const {email, password} = req.body
+        //we are using mongoose to try and find the one that has the specified email 
+        //this will bring back all the user information into the user
+        const user = await User.findOne({email: email})
+        if(!user){
+            return res.status(400).json({msg: "User does not exist. "})
+        }
+        //isMatch if we match the password
+        //compare the password the user send and the password that has been saved in the database
+        //they are both going to use the same salt
+        const isMatch = await bcrypt.compare(password,user.password)
+        if(!isMatch){
+            return res.status(400).json({msg: "Invalid credentials"})
+        }
+        //if everything is okay, we will use the token for authetication 
+        const token = jwt.sign({id: user._id}, process.env.JWT_SECRET)
+        //remember to remove/delete the password so it doesnt get send back to the frontend
+        delete user.password;
+        res.status(200).json({token, user})//this is where they return the token + the user stuff
+
+    } catch (error) {
         res.status(500).json({error: err.message})
     }
 }

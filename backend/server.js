@@ -20,7 +20,10 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import path from "path"
 import { fileURLToPath } from 'url';
-import {register} from './controllers/auth.js'
+import {register} from './controllers/authController.js'
+import authRoutes from "./routes/authRoutes.js"
+import { verifyToken } from './middleware/authMiddleware.js';
+
 /**CONFIGURATION */
 //Middleware configurations and other configurations
 dotenv.config()
@@ -54,6 +57,7 @@ const storage = multer.diskStorage({
         cb(null, file.originalname)
     }
 })
+const upload = multer({storage})
 
 /**ROUTES WITH FILES */
 //this means that if you want to register, you will have to call this api from the front 
@@ -62,10 +66,14 @@ const storage = multer.diskStorage({
  * middleware is the upload.single("picture")
  * register is the function where we save the data (controller)
  */
+//the reason why this needs to be here is because of upload ^^
 //app.post("/auth/register", upload.single("picture"), register)
 app.post("/auth/register", register)
 
-const upload = multer({storage})
+/**ROUTES */
+app.use("/auth", authRoutes)
+
+
 /**MONGOOSE SETUP */
 import connectDB from './config/db.js' // DB connection
 const PORT = process.env.PORT || 6001

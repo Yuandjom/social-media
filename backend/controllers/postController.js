@@ -1,3 +1,4 @@
+import e from "express";
 import Post from "../models/postModel.js";
 import User from "../models/userModel.js";
 
@@ -47,11 +48,86 @@ export const createPost = async (req, res) => {
 };
 
 /**READ */
+/**
+ *
+ * @param {*} req
+ * @param {*} res
+ *
+ * @description Get Feed posts
+ * @route       Get /posts/ (note that this is from the postRoutes.js)
+ * @access      Private
+ */
 export const getFeedPosts = async (req, res) => {
   try {
+    const post = await Post.find();
+    res.status(201).json(post);
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
 };
 
-export const getUserPosts = async (req, res) => {};
+/**
+ *
+ * @param {*} req
+ * @param {*} res
+ *
+ * @description Get User posts
+ * @route       Get /posts/:userId/posts (note that this is from the postRoutes.js)
+ * @access      Private
+ */
+export const getUserPosts = async (req, res) => {
+  try {
+    //grab the userId
+    const { userId } = req.params; //grab from the URL
+    //find the post by the userId
+    const post = await Post.find({ userId });
+    //send the post back
+    res.status(201).json(post);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
+/**UPDATE */
+/**
+ *
+ * @param {*} req
+ * @param {*} res
+ *
+ * @description Like the post by updating it
+ * @route       PATCH  /posts/:id/:friendId
+ * @access      Private
+ */
+export const likePost = async (req, res) => {
+  try {
+    //grab the id from the req.params
+    const { id } = req.params; //this comes from the query string
+    const { userId } = req.body; //userId comes from the body of the request
+    const post = await Post.findById(id);
+
+    //this is basically we are going to check in the likes that if the userId exist
+    //if the userId exist, that means the post has been liked by that particular person
+    const isLiked = post.likes.get(userId);
+    if (isLiked) {
+      post.likes.delete(userId);
+    } else {
+      //if it does not exist
+      post.likes.set(userId, true);
+    }
+    //this is basically find the id and update the likes
+    const updatedPost = await Post.findByIdAndUpdate(
+      id,
+      //this is the list of likes that we modify
+      //passing in the new likes
+      { likes: post.likes },
+      { new: true }
+    );
+    //this is updating the frontend
+    /**
+     * REMEMBER to update the frontend once we hit the like button
+     */
+    res.status(201).json(updatedPost);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};

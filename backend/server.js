@@ -26,6 +26,9 @@ import userRoutes from "./routes/userRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
 import { createPost } from "./controllers/postController.js";
 import { verifyToken } from "./middleware/authMiddleware.js";
+import User from "./models/userModel.js";
+import Post from "./models/postModel.js";
+import { users, posts } from "./data/index.js";
 
 /**CONFIGURATION */
 //Middleware configurations and other configurations
@@ -91,3 +94,7 @@ connectDB();
 
 //listen to a specific port
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+
+/**ADD DATA ONE TIME */
+// User.insertMany(users);
+// Post.insertMany(posts);

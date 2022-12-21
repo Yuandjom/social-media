@@ -31,20 +31,18 @@ import Post from "./models/postModel.js";
 import { users, posts } from "./data/index.js";
 
 /**CONFIGURATION */
-//Middleware configurations and other configurations
-dotenv.config();
 
 // we need to use this bc the package.json is import
-const __filename = fileURLToPath(import.meta.url);
+const __filename = fileURLToPath(import.meta.url); //note to CHANGE DIRECTORY INTO THE BACKEND
 const __dirname = path.dirname(__filename);
-
+//Middleware configurations and other configurations
+dotenv.config();
 //to use the application
 //initialise the app variable from express
 const app = express();
 
 //this is the middleware to have the body parser
 app.use(express.json());
-app.use(helmet());
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(morgan("common"));

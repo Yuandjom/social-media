@@ -56,33 +56,55 @@ function Form() {
     const isLogin = pageType === "login"
     const isRegister = pageType === "register"
 
-    const register = async(values, onSubmitProps)=> {
-        //this allows us to send form information with image
+    // const register = async(values, onSubmitProps)=> {
+    //     //this allows us to send form information with image
+    //     const formData = new FormData();
+    //     //loop through every key object in values and append it to formData
+    //     for(let value in values){
+    //         formData.append(value, values[value])
+    //     }
+    //     //note that the name of the file is going to be our path
+    //     formData.append("picturePath", values.picture.name);
+
+    //     //we are now sending the form data to the particular API call
+    //     //send to the backend 
+    //     const savedUserResponse = await fetch(
+    //         "http://localhost:3001/auth/register", 
+    //         {
+    //             method: "POST", 
+    //             body: formData,
+    //         }
+    //     )
+    //     //whatever we get we are going to save it into the json file 
+    //     const savedUser = await savedUserResponse.json()
+    //     onSubmitProps.resetForm();
+
+    //     if(savedUser){
+    //         setPageType("login");
+    //     }
+    // }
+    const register = async (values, onSubmitProps) => {
+        // this allows us to send form info with image
         const formData = new FormData();
-        //loop through every key object in values and append it to formData
-        for(let value in values){
-            formData.append(value, values[value])
+        for (let value in values) {
+          formData.append(value, values[value]);
         }
-        //note that the name of the file is going to be our path
-        formData.append('picturePath', values.picture.name)
-
-        //we are now sending the form data to the particular API call
-        const savedUserResponse = await fetch(
-            "http://localhost:3001/auth/register", 
-            {
-                method: "POST", 
-                body: formData,
-            }
-        )
-        //whatever we get we are going to save it into the json file 
-        const savedUser = await savedUserResponse.json()
-        onSubmitProps.resetForm();
-
-        if(savedUser){
-            setPageType("login");
-        }
-    }
+        formData.append("picturePath", values.picture.name);
     
+        const savedUserResponse = await fetch(
+          "http://localhost:3001/auth/register",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+        const savedUser = await savedUserResponse.json();
+        onSubmitProps.resetForm();
+    
+        if (savedUser) {
+          setPageType("login");
+        }
+      };
     const login = async(values, onSubmitProps) => {
         const loggedInResponse = await fetch(
             "http://localhost:3001/auth/login",
@@ -116,7 +138,7 @@ function Form() {
           initialValues={isLogin ? initialValuesLogin : initialValuesRegister}
           validationSchema={isLogin ? loginSchema : registerSchema}
         >
-          {({
+          {({ //this is just the convention to follow
             values,
             errors,
             touched,
@@ -187,32 +209,32 @@ function Form() {
                       borderRadius="5px"
                       p="1rem"
                     >
-                      <Dropzone
-                        acceptedFiles=".jpg,.jpeg,.png"
-                        multiple={false}
-                        onDrop={(acceptedFiles) =>
-                          setFieldValue("picture", acceptedFiles[0])
-                        }
+                     <Dropzone
+                    acceptedFiles=".jpg,.jpeg,.png"
+                    multiple={false}
+                    onDrop={(acceptedFiles) =>
+                      setFieldValue("picture", acceptedFiles[0])
+                    }
+                  >
+                    {({ getRootProps, getInputProps }) => (
+                      <Box
+                        {...getRootProps()}
+                        border={`2px dashed ${palette.primary.main}`}
+                        p="1rem"
+                        sx={{ "&:hover": { cursor: "pointer" } }}
                       >
-                        {({ getRootProps, getInputProps }) => (
-                          <Box
-                            {...getRootProps()}
-                            border={`2px dashed ${palette.primary.main}`}
-                            p="1rem"
-                            sx={{ "&:hover": { cursor: "pointer" } }}
-                          >
-                            <input {...getInputProps()} />
-                            {!values.picture ? (
-                              <p>Add Picture Here</p>
-                            ) : (
-                              <FlexBetween>
-                                <Typography>{values.picture.name}</Typography>
-                                <EditOutlinedIcon />
-                              </FlexBetween>
-                            )}
-                          </Box>
+                        <input {...getInputProps()} />
+                        {!values.picture ? (
+                          <p>Add Picture Here</p>
+                        ) : (
+                          <FlexBetween>
+                            <Typography>{values.picture.name}</Typography>
+                            <EditOutlinedIcon />
+                          </FlexBetween>
                         )}
-                      </Dropzone>
+                      </Box>
+                    )}
+                  </Dropzone>
                     </Box>
                   </>
                 )}

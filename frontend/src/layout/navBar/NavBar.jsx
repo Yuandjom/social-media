@@ -44,7 +44,7 @@ function NavBar() {
             },
           }}
         >
-          Sociopedia
+          Social Media
         </Typography>
         {isNonMobileScreens && (
           <FlexBetween

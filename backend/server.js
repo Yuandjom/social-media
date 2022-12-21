@@ -49,13 +49,16 @@ app.use(morgan("common"));
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(cors()); //cors is for resource sharing policies
-app.use("/assets", express.static(path.join(__dirname, "public/assets"))); //this is stored locally
+app.use(
+  "/assets",
+  express.static(path.join(__dirname, "backend/public/assets"))
+); //this is stored locally
 
 /**FILE STORAGE */
 //these are from the github repo of multer
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "public/assets");
+    cb(null, "backend/public/assets");
   },
   filename: function (req, file, cb) {
     cb(null, file.originalname);

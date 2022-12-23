@@ -93,6 +93,6 @@ export const login = async (req, res) => {
     delete user.password;
     res.status(200).json({ token, user }); //this is where they return the token + the user stuff
   } catch (error) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: error.message });
   }
 };
